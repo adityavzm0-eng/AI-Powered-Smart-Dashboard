@@ -1,8 +1,8 @@
 {
-  "name": "skillsync-ai",
+  "name": "insightai-dashboard-generator",
   "private": true,
-  "version": "2.0.0",
-  "description": "SkillSync AI — Resume Intelligence & Career Growth Platform",
+  "version": "1.0.0",
+  "description": "InsightAI — AI-Powered Smart Dashboard Generator",
   "type": "module",
   "scripts": {
     "dev": "vite",

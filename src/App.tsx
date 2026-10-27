@@ -1,249 +1,124 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { DashboardProvider, useDashboard } from './context/DashboardContext';
 import { Navbar } from './components/Navbar';
 import { Sidebar } from './components/Sidebar';
-import { LandingPage } from './pages/LandingPage';
-import { OverviewPage } from './pages/OverviewPage';
-import { AnalyzerPage } from './pages/AnalyzerPage';
-import { ResultsPage } from './pages/ResultsPage';
-import { RoadmapPage } from './pages/RoadmapPage';
-import { StudioPage } from './pages/StudioPage';
-import { JobComparePage } from './pages/JobComparePage';
-import { HistoryPage } from './pages/HistoryPage';
-import { SettingsPage } from './pages/SettingsPage';
+import { DashboardView } from './components/DashboardView';
+import { DataProfilingView } from './components/DataProfilingView';
+import { DataPreviewTable } from './components/DataPreviewTable';
+import { AIInsightsPanel } from './components/AIInsightsPanel';
+import { AICopilotDrawer } from './components/AICopilotDrawer';
+import { FileUploadModal } from './components/FileUploadModal';
+import { FilterDrawer } from './components/FilterDrawer';
+import { AddChartModal } from './components/AddChartModal';
+import { ExportModal } from './components/ExportModal';
+import { SettingsModal } from './components/SettingsModal';
+import { Toast } from './components/Toast';
+import {
+  Loader2,
+  AlertTriangle,
+  RefreshCw,
+  Sparkles,
+  UploadCloud,
+  FileSpreadsheet,
+  BrainCircuit
+} from 'lucide-react';
 
-import { AnalysisResult, HistoryRecord, SamplePreset } from './types/skillsync';
-import { 
-  analyzeResumeApi, 
-  getHistoryApi, 
-  getHistoryByIdApi, 
-  deleteHistoryApi, 
-  clearAllHistoryApi, 
-  getSampleDataApi 
-} from './services/api';
-import { exportAnalysisToPdf } from './services/pdfExport';
-
-export const App: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<string>('landing');
-  const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(false);
-  
-  // Active Analysis State
-  const [currentAnalysis, setCurrentAnalysis] = useState<AnalysisResult | null>(null);
-  const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
-  const [analysisProgress, setAnalysisProgress] = useState<string>('');
-  
-  // History & Presets State
-  const [history, setHistory] = useState<HistoryRecord[]>([]);
-  const [samplePresets, setSamplePresets] = useState<SamplePreset[]>([]);
-
-  // Load sample presets & past history on mount
-  useEffect(() => {
-    getSampleDataApi()
-      .then(setSamplePresets)
-      .catch((err) => console.warn('Could not fetch sample presets:', err));
-
-    getHistoryApi()
-      .then(setHistory)
-      .catch((err) => console.warn('Could not fetch history:', err));
-  }, []);
-
-  // Main Resume Analysis Action
-  const handleAnalyze = async (formData: FormData) => {
-    setIsAnalyzing(true);
-    setAnalysisProgress('Extracting readable text & parsing sections...');
-
-    const progressTimer1 = setTimeout(() => {
-      setAnalysisProgress('Mining technical skills & normalizing canonical aliases...');
-    }, 600);
-
-    const progressTimer2 = setTimeout(() => {
-      setAnalysisProgress('Computing Scikit-learn TF-IDF semantic vector similarity...');
-    }, 1300);
-
-    const progressTimer3 = setTimeout(() => {
-      setAnalysisProgress('Synthesizing 4-week roadmap & ATS recommendations...');
-    }, 2000);
-
-    try {
-      const result = await analyzeResumeApi(formData);
-      setCurrentAnalysis(result);
-      
-      // Refresh history
-      getHistoryApi().then(setHistory).catch(() => {});
-      
-      // Auto-navigate to Results dashboard
-      setActiveTab('results');
-    } catch (err: any) {
-      alert('Analysis Error: ' + (err.message || 'Failed to complete analysis'));
-    } finally {
-      clearTimeout(progressTimer1);
-      clearTimeout(progressTimer2);
-      clearTimeout(progressTimer3);
-      setIsAnalyzing(false);
-      setAnalysisProgress('');
-    }
-  };
-
-  // Quick 1-Click Demo Launcher
-  const handleLoadDemoPreset = async () => {
-    if (samplePresets.length === 0) {
-      const presets = await getSampleDataApi().catch(() => []);
-      setSamplePresets(presets);
-    }
-    const preset = samplePresets[0];
-    if (preset) {
-      const formData = new FormData();
-      formData.append('resume_text', preset.resume_text);
-      formData.append('job_description', preset.job_description);
-      formData.append('target_role', preset.role_title);
-      formData.append('experience_level', preset.experience_level);
-      formData.append('save_history', 'true');
-      await handleAnalyze(formData);
-    }
-  };
-
-  // Select Record from History
-  const handleSelectHistoryRecord = async (id: string) => {
-    try {
-      const fullRecord = await getHistoryByIdApi(id);
-      setCurrentAnalysis(fullRecord);
-      setActiveTab('results');
-    } catch (err) {
-      alert('Could not retrieve full analysis record.');
-    }
-  };
-
-  // Delete Record from History
-  const handleDeleteHistoryRecord = async (id: string) => {
-    try {
-      await deleteHistoryApi(id);
-      setHistory(prev => prev.filter(r => r.id !== id));
-      if (currentAnalysis?.id === id) {
-        setCurrentAnalysis(null);
-      }
-    } catch (err) {
-      alert('Failed to delete history item.');
-    }
-  };
-
-  // Clear All History
-  const handleClearAllHistory = async () => {
-    try {
-      await clearAllHistoryApi();
-      setHistory([]);
-      setCurrentAnalysis(null);
-    } catch (err) {
-      alert('Failed to purge history.');
-    }
-  };
-
-  // Export PDF Report
-  const handleExportPdf = () => {
-    if (currentAnalysis) {
-      exportAnalysisToPdf(currentAnalysis);
-    }
-  };
+const MainLayout: React.FC = () => {
+  const { dataset, loading, error, activeTab, loadSampleDataset, setIsUploadOpen, isCopilotOpen } = useDashboard();
+  const [isExportOpen, setIsExportOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#0B0F19] text-slate-100 flex flex-col font-sans selection:bg-cyan-500/30 selection:text-cyan-300">
-      {/* Top Header Navbar */}
-      <Navbar
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
-        onLoadPreset={handleLoadDemoPreset}
-        onExportPdf={handleExportPdf}
-        hasAnalysisData={Boolean(currentAnalysis)}
-        onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
-        sidebarCollapsed={sidebarCollapsed}
-      />
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col font-sans transition-colors selection:bg-indigo-500/30 selection:text-indigo-400">
+      {/* Top Navbar */}
+      <Navbar onOpenExport={() => setIsExportOpen(true)} />
 
-      {/* Main Workspace with Collapsible Sidebar */}
+      {/* Main Workspace Body */}
       <div className="flex-1 flex overflow-hidden">
-        <Sidebar
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
-          collapsed={sidebarCollapsed}
-          onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
-          hasAnalysis={Boolean(currentAnalysis)}
-        />
+        {/* Collapsible Left Sidebar */}
+        <Sidebar />
 
-        {/* Dynamic Page Views */}
-        <main className="flex-1 overflow-y-auto bg-gradient-to-b from-[#0B0F19] via-[#0D1322] to-[#090D16]">
-          {activeTab === 'landing' && (
-            <LandingPage
-              onStartAnalysis={() => setActiveTab('analyzer')}
-              onLoadPreset={handleLoadDemoPreset}
-            />
-          )}
+        {/* Dynamic Content View Area */}
+        <main className="flex-1 overflow-y-auto px-4 py-6 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto">
+            {/* Loading Overlay */}
+            {loading && !dataset && (
+              <div className="flex flex-col items-center justify-center py-28 text-center space-y-5">
+                <div className="relative">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-600 to-cyan-500 flex items-center justify-center text-white shadow-xl shadow-indigo-500/25 animate-pulse">
+                    <BrainCircuit className="w-8 h-8" />
+                  </div>
+                  <Loader2 className="w-6 h-6 text-indigo-400 animate-spin absolute -top-2 -right-2" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                    Analyzing Dataset & Generating Dashboard...
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mt-1">
+                    Inferring column datatypes, detecting outliers, computing correlations, and synthesizing charts.
+                  </p>
+                </div>
+              </div>
+            )}
 
-          {activeTab === 'overview' && (
-            <OverviewPage
-              currentAnalysis={currentAnalysis}
-              history={history}
-              onNavigate={setActiveTab}
-              onSelectHistory={handleSelectHistoryRecord}
-            />
-          )}
+            {/* Error Fallback */}
+            {error && !dataset && (
+              <div className="p-8 text-center max-w-md mx-auto my-16 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-500">
+                <AlertTriangle className="w-10 h-10 mx-auto mb-3 text-rose-400" />
+                <h3 className="text-base font-bold">Failed to Load Dataset</h3>
+                <p className="text-xs text-rose-600 dark:text-rose-400 mt-1 mb-4">{error}</p>
+                <div className="flex justify-center gap-3">
+                  <button
+                    onClick={() => loadSampleDataset('ecommerce')}
+                    className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-sm transition-all flex items-center gap-1.5"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5" />
+                    <span>Load Default E-Commerce Data</span>
+                  </button>
+                  <button
+                    onClick={() => setIsUploadOpen(true)}
+                    className="px-4 py-2 rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs font-semibold hover:bg-slate-300 dark:hover:bg-slate-700 transition-all flex items-center gap-1.5"
+                  >
+                    <UploadCloud className="w-3.5 h-3.5" />
+                    <span>Upload CSV / Excel</span>
+                  </button>
+                </div>
+              </div>
+            )}
 
-          {activeTab === 'analyzer' && (
-            <AnalyzerPage
-              onAnalyze={handleAnalyze}
-              samplePresets={samplePresets}
-              isAnalyzing={isAnalyzing}
-              analysisProgress={analysisProgress}
-            />
-          )}
-
-          {activeTab === 'results' && currentAnalysis && (
-            <ResultsPage
-              data={currentAnalysis}
-              onNavigate={setActiveTab}
-            />
-          )}
-
-          {activeTab === 'roadmap' && currentAnalysis && (
-            <RoadmapPage
-              roadmap={currentAnalysis.roadmap}
-              interviewPrep={currentAnalysis.interview_prep}
-              projectRecommendations={currentAnalysis.project_recommendations}
-            />
-          )}
-
-          {activeTab === 'studio' && currentAnalysis && (
-            <StudioPage
-              studioData={currentAnalysis.improvement_studio}
-              originalResumeText={currentAnalysis.resume_skills.map(s => s.evidence.join(' ')).join('\n') || ''}
-              jobDescriptionText={currentAnalysis.jd_analysis.responsibilities.join('\n') || ''}
-              targetRole={currentAnalysis.target_role}
-            />
-          )}
-
-          {activeTab === 'jobs' && (
-            <JobComparePage
-              currentResumeText={
-                currentAnalysis
-                  ? Object.values(currentAnalysis.resume_metadata.sections || {}).join('\n\n')
-                  : ''
-              }
-            />
-          )}
-
-          {activeTab === 'history' && (
-            <HistoryPage
-              history={history}
-              onSelectRecord={handleSelectHistoryRecord}
-              onDeleteRecord={handleDeleteHistoryRecord}
-              onClearAll={handleClearAllHistory}
-              onRefresh={() => getHistoryApi().then(setHistory)}
-            />
-          )}
-
-          {activeTab === 'settings' && (
-            <SettingsPage />
-          )}
+            {/* Loaded Workspace Screens */}
+            {dataset && (
+              <div id="dashboard-capture-root" className="space-y-6">
+                {activeTab === 'dashboard' && <DashboardView />}
+                {activeTab === 'profiling' && <DataProfilingView />}
+                {activeTab === 'explorer' && <DataPreviewTable />}
+                {activeTab === 'insights' && <AIInsightsPanel />}
+                {activeTab === 'copilot' && <AICopilotDrawer isDrawer={false} />}
+              </div>
+            )}
+          </div>
         </main>
       </div>
+
+      {/* Docked / Floating Copilot on the Bottom Left */}
+      {activeTab !== 'copilot' && (
+        <AICopilotDrawer isDrawer={true} />
+      )}
+
+      {/* Global Modals & Drawers */}
+      <FileUploadModal />
+      <FilterDrawer />
+      <AddChartModal />
+      <ExportModal isOpen={isExportOpen} onClose={() => setIsExportOpen(false)} />
+      <SettingsModal />
+      <Toast />
     </div>
   );
 };
 
-export default App;
+export default function App() {
+  return (
+    <DashboardProvider>
+      <MainLayout />
+    </DashboardProvider>
+  );
+}

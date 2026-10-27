@@ -1,177 +1,152 @@
-# SkillSync AI — Resume Intelligence & Career Growth Platform
+# InsightAI — AI-Powered Smart Dashboard Generator
 
-[![Python](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white)](https://python.org)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
 [![React](https://img.shields.io/badge/React-18.3+-61DAFB?logo=react&logoColor=black)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.4+-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![Python](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white)](https://python.org)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4+-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
-[![PyMuPDF](https://img.shields.io/badge/PyMuPDF-fitz-blue)](https://pymupdf.readthedocs.io)
-[![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-TF--IDF-F7931E?logo=scikitlearn&logoColor=white)](https://scikit-learn.org)
+[![Recharts](https://img.shields.io/badge/Recharts-2.12+-22C55E)](https://recharts.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-**SkillSync AI** is a modern, intelligent, AI-powered web platform designed to analyze candidate resumes against target job descriptions, discover matched and missing technical skills, compute explainable compatibility scores (0–100), visualize skill gaps through dynamic charts, and generate personalized 4-week learning roadmaps to maximize employability.
+**InsightAI** is an intelligent, full-stack data analytics and automated dashboard platform inspired by the ease-of-use of Power BI, combined with deterministic Pandas statistical profiling and an interactive AI copilot.
 
-Designed with a premium SaaS aesthetic: dark navy and deep purple themes, glassmorphism, electric blue/violet accents, collapsible sidebar navigation, and real NLP & ML processing.
-
----
-
-## 🌟 Key Highlights & Features
-
-### 1. Dual-Engine Resume & Job Description Analyzer
-- **PyMuPDF & pypdf Engine**: Ingests text-based PDF resumes with page-level layout parsing, character/word telemetry, and scanned PDF detection.
-- **Section & Metadata Identification**: Automatically detects Professional Summary, Technical Skills, Work Experience, Education, Projects, Certifications, Contact details, and estimated years of experience.
-- **Editable Extracted Skills**: Allows users to inspect and refine extracted skills before running comparisons to eliminate false positives.
-
-### 2. Explainable 0–100 Compatibility Score Engine
-Transparent multi-factor scoring formula:
-$$\text{Score} = w_1(\text{Required Skills}) + w_2(\text{Preferred Skills}) + w_3(\text{Semantic Similarity}) + w_4(\text{Projects}) + w_5(\text{Experience})$$
-- Default weights: Required Skills (40%), Preferred Skills (15%), Semantic TF-IDF Cosine Similarity (20%), Project Evidence (15%), Experience Alignment (10%).
-- Fully customizable via the **Settings** panel with live re-computation.
-- Circular SVG progress indicator, score tier, evidence-based strengths, and actionable improvement priorities.
-
-### 3. Interactive Skill Gap Matrix & Visualizations
-- **Horizontal Distribution Chart**: Recharts visualization comparing Matched, Partially Matched, Missing, and Additional skills.
-- **Dynamic Competency Radar Chart**: Synthesizes skill categories dynamically from the job description and candidate resume.
-- **Skill Gap Matrix Table**: Filterable table with search, category filtering, status pills, and clickable text evidence snippets from the resume.
-
-### 4. Personalized 4-Week AI Career Growth Roadmap
-- **3 Priority Tiers**: Priority 1 (Essential Must-Haves), Priority 2 (Practical Tools), and Priority 3 (Advanced Architectures).
-- **Interactive 4-Week Timeline**: Week 1 (Fundamentals), Week 2 (Practical Exercises), Week 3 (Capstone Project Implementation), Week 4 (Portfolio & Interview Readiness).
-- Interactive milestone check-offs and deliverable tracking.
-
-### 5. ATS Resume Improvement Studio & Before/After Simulator
-- **ATS Compliance Audit**: Automated checklist testing contact info, standard section headers, quantifiable metrics, and active action verbs.
-- **Missing High-Value Keywords**: 1-click copy for high-impact missing ATS keywords.
-- **Side-by-Side Professional Summary Optimizer**: Front-loads verified candidate skills and aligns with target job title.
-- **Google XYZ Bullet Enhancer**: Rewrites passive duties into high-impact accomplishment bullets (*Accomplished [X], as measured by [Y], by doing [Z]*).
-- **Before-and-After Simulator**: Test resume revisions against the same job description to measure your score improvement delta in real-time.
-
-### 6. Multiple Job Match Studio
-- Compare 1 resume across up to 4 job descriptions simultaneously (e.g., *Machine Learning Engineer* vs. *Data Scientist* vs. *Cloud DevOps Engineer*).
-- Instant compatibility rankings, gap analysis, and best-fit badge.
-
-### 7. Tailored Portfolio Projects & Interview Prep Generator
-- **Project Blueprints**: Generates 2–3 portfolio project proposals with tech stack, step-by-step architecture, and ready-to-copy resume bullet points.
-- **Interview Question Bank**: Role-specific technical theory questions, model answers, coding prompts, and behavioral architecture questions.
-
-### 8. Privacy-First Architecture & Exportable PDF Reports
-- **100% Client-Side Privacy**: Raw uploaded resume PDFs are processed in-memory and never permanently stored.
-- **One-Click Data Purge**: Complete deletion of saved SQLite history records.
-- **Professional PDF Export**: Generates a formatted, multi-page analysis report using `jsPDF`.
+Upload any CSV or Excel file (`.xlsx`, `.xls`) to instantly receive an automated, high-resolution analytical dashboard complete with KPI summary cards, relationship and bivariate scatter charts, distribution histograms, outlier detection, and an AI conversational analyst.
 
 ---
 
-## 🛠️ Technology Stack
+## 🌟 Key Highlights & Capabilities
 
-| Layer | Technologies |
-|---|---|
-| **Frontend** | React 18, TypeScript, Tailwind CSS, Recharts, Lucide Icons, jsPDF |
-| **Backend** | Python 3.11+, FastAPI, Uvicorn, Pydantic, SQLite |
-| **NLP & ML** | PyMuPDF (fitz), Scikit-Learn (TF-IDF Vectorizer & Cosine Similarity), NumPy |
-| **AI / LLM** | Optional OpenAI (`gpt-4o-mini`) / Google Gemini integration with deterministic offline NLP fallback |
-| **Testing** | PyTest, FastAPI TestClient, HTTPX |
+### 1. Automated Dataset Profiling & Health Scoring
+- **Automated Type Inference**: Instantly categorizes variables into numerical, categorical, date/time, boolean, and primary key/ID fields.
+- **Dataset Health Index (0–100%)**: Computes completeness ratios, missing-cell percentages, and duplicate row detection.
+- **5-Number Statistical Summary**: Computes min, max, mean, median, standard deviation, interquartile range (IQR), and skewness for numerical variables.
+- **IQR Outlier Detection**: Automatically calculates $1.5 \times \text{IQR}$ lower and upper thresholds, isolating statistical anomalies.
+
+### 2. 14 Dynamic Relationship & Combined Dashboards
+- **Chronological Momentum**: Area chart mapping aggregate volume across time periods.
+- **Pareto Category Leaderboard**: Ranked bar chart revealing primary revenue drivers.
+- **Outlier & Dispersion Spectrum**: Visual distribution of numerical variables.
+- **Bivariate Metric Relationship (Sales vs. Profit)**: Interactive scatter plot analyzing metric correlations.
+- **Trade-off Spectrum (Discount vs. Profit)**: Scatter plot evaluating discount impacts on margin.
+- **Multi-Factor Synergy (Margin vs. Volume)**: Scatter plot identifying volume efficiency.
+- **Market Share & Allocation**: Donut/pie charts of categorical distributions.
+- **Secondary Category Contribution**: Granular breakdowns by sub-segment.
+- **Segmented Profit Distribution**: Cross-categorical margin analysis.
+- **Comparative Efficiency Curve**: Trend curve highlighting performance shifts.
+- **Frequency Distribution Histogram**: Binned distribution across 10 dynamic quantiles.
+- **Regional Geographic Breakdown**: Regional volume and performance comparison.
+- **Operational Cycle Duration**: Cycle time and shipping duration analytics.
+- **Interactive High-Resolution Data Grid**: Searchable, sortable, and paginated data table.
+
+### 3. InsightAI Copilot (Bottom-Left Assistant)
+- **Docked Interface**: Docked cleanly at the bottom-left corner with high-contrast pure black (`#000000`) background and crisp white typography.
+- **Hybrid Intelligence**: Deterministic Python-backed calculations for precision questions (*"What is the average sales?"*, *"Show highest profit category"*), supplemented by modular OpenAI or Google Gemini integration for narrative insights.
+- **Custom Chart Pinning**: Ask the Copilot to synthesize a new chart and pin it directly onto your live dashboard.
+
+### 4. Interactive Slicing & Dicing
+- **Global Cross-Filtering**: Slice data by date ranges, categorical attributes, or numerical thresholds.
+- **Dynamic Chart Type Switching**: Switch between Bar, Line, Area, Scatter, and Pie charts on the fly.
+- **Custom Aggregations**: Compute Sum, Average, Count, Minimum, or Maximum dynamically.
+
+### 5. Production Architecture & Security
+- **API Key Privacy**: All AI API keys are managed server-side and never exposed to the frontend bundle.
+- **Zero-Dependency Fallback**: Fully functional out of the box using built-in deterministic heuristics when no external API key is provided.
+- **Export Controls**: 1-click export of filtered datasets to CSV or print-ready dashboard reports.
+
+---
+
+## 🏗️ System Architecture
+
+```
+insightai/
+├── backend/
+│   ├── main.py              # FastAPI application gateway & endpoints
+│   ├── profiler.py          # Pandas statistical profiling & type inference
+│   ├── dashboard_engine.py  # Automated dashboard synthesis (14 chart configs)
+│   ├── ai_engine.py         # Modular AI provider adapter (OpenAI / Gemini)
+│   ├── copilot.py           # InsightAI natural-language query engine
+│   ├── data_store.py        # In-memory dataset caching & filtering
+│   ├── sample_data.py       # Pre-loaded benchmark datasets
+│   └── requirements.txt     # Python dependencies
+├── src/
+│   ├── components/          # React components (DashboardView, Copilot, Navbar, etc.)
+│   ├── context/             # Global dashboard state & filtering context
+│   ├── services/            # Axios / Fetch API client
+│   ├── types/               # TypeScript interfaces
+│   ├── App.tsx              # Main application shell
+│   └── main.jsx             # React DOM entry point
+├── tests/
+│   └── test_insightai.py    # Automated test suite
+└── package.json             # Vite & React dependencies
+```
 
 ---
 
 ## 🚀 Quick Start Guide
 
-### 1. Prerequisites
-- Python 3.11 or higher
-- Node.js 18 or higher (with npm)
+### Prerequisites
+- **Node.js** v18+ and **npm**
+- **Python** 3.10+
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/adityavzm0-eng/AI-Powered-Smart-Dashboard.git
+cd AI-Powered-Smart-Dashboard
+```
 
 ### 2. Backend Setup
-
 ```bash
-# Navigate to the project root
-cd Voting_System
+# Navigate to backend directory
+cd backend
 
-# Create and activate Python virtual environment
+# Create and activate virtual environment
 python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 
-# Windows PowerShell:
-.\.venv\Scripts\Activate.ps1
-# macOS/Linux:
-source .venv/bin/activate
+# Install dependencies
+pip install -r requirements.txt
 
-# Install backend dependencies
-pip install -r backend/requirements.txt
-
-# (Optional) Configure environment variables in backend/.env
-# If omitted, SkillSync AI runs its full deterministic offline NLP engine without external APIs.
+# Start FastAPI server
+python -m uvicorn main:app --host 127.0.0.1 --port 8000 --reload
 ```
-
-Start the FastAPI backend server:
-```bash
-python -m uvicorn backend.main:app --host 127.0.0.1 --port 8000 --reload
-```
-The backend API documentation is available at: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
 
 ### 3. Frontend Setup
-
-In a separate terminal window:
 ```bash
-# Install frontend dependencies (if not already installed)
+# In the project root directory
 npm install
 
 # Start Vite development server
 npm run dev
 ```
+
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
-## 🧪 Automated Testing Suite
+## ⚙️ Environment Variables (Optional)
 
-The application includes automated tests covering skill normalization, regex boundary extraction, section identification, job description parsing, semantic matching, scoring explainability, and REST API error handling.
+Create a `.env` file inside the `backend/` directory for external LLM narrative generation:
 
-Run tests:
-```bash
-# Windows PowerShell
-$env:PYTHONPATH="."; .\.venv\Scripts\python.exe -m pytest backend/tests -v
-
-# macOS/Linux
-PYTHONPATH=. pytest backend/tests -v
+```env
+AI_PROVIDER=gemini        # 'gemini' or 'openai'
+AI_MODEL=gemini-1.5-flash # or 'gpt-4o'
+AI_API_KEY=your_api_key_here
 ```
 
-All 8 test suites:
-- `test_skill_normalization`: Validates canonical aliases (e.g. `sklearn` -> `Scikit-learn`, `k8s` -> `Kubernetes`).
-- `test_skill_extraction_and_evidence`: Verifies context snippet extraction from sentences.
-- `test_cleaner_and_section_detection`: Tests heading detection and contact extraction.
-- `test_job_description_intelligence_and_matching`: Validates required vs preferred classification and semantic transfer logic.
-- `test_scoring_formula`: Tests weighted explainability and 0–100 normalization.
-- `test_roadmap_generation`: Verifies 4-week timeline and 3 priority tiers.
-- `test_pdf_extractor_edge_cases`: Tests empty/scanned PDF handling without crashes.
-- `test_api_endpoints`: Integration test for all REST API endpoints.
+*Note: If no API key is configured, InsightAI automatically uses its deterministic analytical engine.*
 
 ---
 
-## 📡 REST API Reference
+## 🧪 Testing
 
-| Method | Endpoint | Description |
-|---|---|---|
-| `POST` | `/api/analyze-resume` | Uploads PDF or text, extracts skills, compares against JD, returns full analysis |
-| `POST` | `/api/extract-skills` | Extracts skills and categories from raw text |
-| `POST` | `/api/analyze-job-description` | Parses job description into required and preferred skills for editing |
-| `POST` | `/api/compare-skills` | Re-evaluates compatibility score with custom weights or edited skills |
-| `POST` | `/api/compare-jobs` | Evaluates 1 resume against up to 4 job descriptions simultaneously |
-| `POST` | `/api/before-after` | Computes alignment score gain between original and revised resume text |
-| `GET` | `/api/history` | Lists past saved analysis records |
-| `GET` | `/api/history/{id}` | Retrieves full analysis by ID |
-| `DELETE` | `/api/history/{id}` | Deletes a single analysis record |
-| `DELETE` | `/api/history` | Purges all analysis history for complete privacy |
-| `GET` | `/api/settings` | Returns active scoring weights and LLM integration status |
-| `GET` | `/api/sample-data` | Pre-populated demo profiles for 1-click test drives |
+Run backend unit and integration tests:
 
----
-
-## 🔒 Security & Privacy Policy
-
-1. **Zero-Leakage API Keys**: API credentials (`OPENAI_API_KEY`, `LLM_API_KEY`) remain strictly on the backend server within `backend/.env`. They are never passed to the frontend client, exposed in browser network tabs, or stored in client-side code.
-2. **Local Session Ingestion**: Uploaded resumes are read in-memory. Binary file buffers are discarded immediately after text extraction.
-3. **No Mandatory LLM Requirement**: SkillSync AI operates with full fidelity entirely offline using Python, PyMuPDF, and Scikit-learn TF-IDF vectors. LLM calls are optional enhancements and gracefully fall back to deterministic heuristics if an API key is missing or offline.
-4. **Data Purge**: Users can delete individual records or wipe the entire SQLite database at any time from the History page.
+```bash
+pytest tests/test_insightai.py -v
+```
 
 ---
 
 ## 📄 License
-This project is licensed under the MIT License.
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
