@@ -20,12 +20,20 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from dotenv import load_dotenv
 import pandas as pd
 import numpy as np
-
-# Load environment variables
-load_dotenv()
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    env_file = os.path.join(BASE_DIR, ".env")
+    if os.path.exists(env_file):
+        with open(env_file, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith("#") and "=" in line:
+                    k, v = line.split("=", 1)
+                    os.environ.setdefault(k.strip(), v.strip())
 
 from data_store import store
 from profiler import profile_dataset
@@ -160,6 +168,7 @@ def load_sample_dataset(sample_key: str):
         "preview_rows": df.head(100).replace({np.nan: None}).to_dict(orient="records")
     }
 
+@app.post("/api/datasets/upload")
 @app.post("/api/upload")
 async def upload_file(file: UploadFile = File(...)):
     filename = file.filename or "uploaded_dataset.csv"
@@ -350,6 +359,7 @@ async def copilot_query(dataset_id: str, req: CopilotQueryRequest):
     return resp
 
 @app.get("/api/dataset/{dataset_id}/export/csv")
+@app.get("/api/datasets/{dataset_id}/export/csv")
 def export_dataset_csv(dataset_id: str):
     df = store.get_dataframe(dataset_id)
     if df is None:
@@ -360,6 +370,21 @@ def export_dataset_csv(dataset_id: str):
         content=csv_bytes,
         media_type="text/csv",
         headers={"Content-Disposition": f"attachment; filename=insightai_{dataset_id}.csv"}
+    )
+
+@app.post("/api/datasets/{dataset_id}/export")
+@app.post("/api/dataset/{dataset_id}/export")
+def export_filtered_dataset(dataset_id: str, filters: Optional[FilterRequest] = None):
+    df = store.get_dataframe(dataset_id)
+    if df is None:
+        raise HTTPException(status_code=404, detail="Dataset not found.")
+    
+    filtered = store.apply_filters(df, filters.dict() if filters else None)
+    csv_bytes = filtered.to_csv(index=False).encode('utf-8')
+    return Response(
+        content=csv_bytes,
+        media_type="text/csv",
+        headers={"Content-Disposition": f"attachment; filename=insightai_{dataset_id}_filtered.csv"}
     )
 
 if __name__ == "__main__":
